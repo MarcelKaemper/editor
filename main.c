@@ -14,8 +14,17 @@ int main(int argc, char ** argv) {
     noecho();
     keypad(stdscr, TRUE);
 
+	for(int i = 0; i<h; i++){
+		for(int j = 0; j<w; j++){
+			if((i == h-1) || (i == 0)){
+				mvaddch(i,j,ACS_BLOCK);
+			}else if((j == 0) || (j == w-1)){
+				mvaddch(i,j,ACS_BLOCK);
+			}
+		}
+	}
+	refresh();
 	getch();
-
 
     endwin();
 
