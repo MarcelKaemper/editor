@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+#include "src/readFile.h"
 
 int main(int argc, char ** argv) {
 
@@ -16,17 +17,21 @@ int main(int argc, char ** argv) {
 
 	for(int i = 0; i<h; i++){
 		for(int j = 0; j<w; j++){
-			if((i == h-1) || (i == 0)){
+			if((i==0) || (i==h-1)){
 				mvaddch(i,j,ACS_BLOCK);
-			}else if((j == 0) || (j == w-1)){
-				mvaddch(i,j,ACS_BLOCK);
+			}else{
+				mvaddch(i, 0, ACS_BLOCK);
+				mvaddch(i, w-1, ACS_BLOCK);
 			}
 		}
 	}
+
 	refresh();
 	getch();
 
     endwin();
+
+	readFile();
 
     return 0;
 }
