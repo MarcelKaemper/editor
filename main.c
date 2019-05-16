@@ -3,6 +3,9 @@
 #include <ncurses.h>
 #include "src/readFile.h"
 
+void drawHome(int h, int w);
+void drawPanel(int h, int w);
+
 int main(int argc, char ** argv) {
 
     initscr();
@@ -15,31 +18,33 @@ int main(int argc, char ** argv) {
     noecho();
     keypad(stdscr, TRUE);
 
-	while(1){
-		for(int i = 0; i<h; i++){
-			for(int j = 0; j<w; j++){
-				if((i==0) || (i==h-1)){
-					mvaddch(i,j,ACS_BLOCK);
-				}else{
-					mvaddch(i, 0, ACS_BLOCK);
-					mvaddch(i, w-1, ACS_BLOCK);
-				}
-			}
-		}
-		refresh();
+	for(;;){
+		drawHome(h,w);
 
-		char c;
-		
+		int c;
+		unsigned int cursorPos;
+		cursorPos = 0;
+
 		if((c = getch()) == 'c'){
-			for(int i = 0; i<w; i++){
-				mvaddch(h-3, i, ACS_BLOCK);
-			}
-			move(h-2, 2);
+			drawPanel(h,w);
+			move(h-2, cursorPos+2);
 			while((c = getch()) != 10){
-				addch(c);
+				if(c == KEY_BACKSPACE){
+					if(cursorPos > 0){
+						cursorPos -= 1;
+						mvdelch(h-2, w-1);
+						mvdelch(h-2, cursorPos+2);
+					}
+				}else{
+					mvaddch(h-2, cursorPos+2, c);
+					cursorPos += 1;
+				}
+				drawHome(h,w);
+				drawPanel(h,w);
 			}
 		}else if(c == 10){
 			break;	
+			
 		}
 
 		clear();
@@ -51,4 +56,25 @@ int main(int argc, char ** argv) {
 	readFile();
 
     return 0;
+}
+
+void drawHome(int h, int w){
+	for(int i = 0; i<h; i++){
+		for(int j = 0; j<w; j++){
+			if((i==0) || (i==h-1)){
+				mvaddch(i,j,ACS_BLOCK);
+			}else{
+				mvaddch(i, 0, ACS_BLOCK);
+				mvaddch(i, w-1, ACS_BLOCK);
+			}
+		}
+	}
+	refresh();
+}
+
+void drawPanel(int h, int w){
+	for(int i = 0; i<w; i++){
+		mvaddch(h-3, i, ACS_BLOCK);
+	}
+	refresh();
 }
