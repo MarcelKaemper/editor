@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <ncurses.h>
 #include "src/readFile.h"
 
@@ -27,7 +28,14 @@ int main(int argc, char ** argv) {
 
 		if((c = getch()) == 'c'){
 			drawPanel(h,w);
+
 			move(h-2, cursorPos+2);
+
+			char * cmd;
+			char * cb;
+			int size = 1;
+			cmd = (char *) malloc(size);
+
 			while((c = getch()) != 10){
 				if(c == KEY_BACKSPACE){
 					if(cursorPos > 0){
@@ -37,15 +45,27 @@ int main(int argc, char ** argv) {
 					}
 				}else{
 					mvaddch(h-2, cursorPos+2, c);
+					cmd[cursorPos] = c;
 					cursorPos += 1;
+
+					cb = malloc(1);
+					cb = memset(cb,c,1);
+					strcat(cmd, cb);
+					size += 1;
+					cmd = (char *) realloc(cmd, size);
+					free(cb);
 				}
+
+				mvaddstr(10,10,cmd);
+
 				drawHome(h,w);
 				drawPanel(h,w);
 			}
+
 		}else if(c == 10){
 			break;	
-			
 		}
+
 
 		clear();
 	}
